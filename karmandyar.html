@@ -25,6 +25,7 @@
       --warning: #f59e0b;
       --danger: #ef4444;
       --holiday: #a78bfa;
+      --leave: #38bdf8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -115,6 +116,9 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
+    .totals .total-item:last-child {
+      grid-column: 1 / -1;
+    }
     .total-item {
       background: var(--bg);
       border-radius: 8px;
@@ -125,6 +129,7 @@
     .total-item .value { font-size: 1.15rem; font-weight: 700; margin-top: 2px; direction: ltr; }
     .total-item.overtime .value { color: var(--success); }
     .total-item.deficit .value { color: var(--danger); }
+    .total-item.leave .value { color: var(--leave); }
     .day {
       display: grid;
       grid-template-columns: 36px 1fr;
@@ -147,6 +152,7 @@
     }
     .day-num.holiday { background: rgba(167, 139, 250, 0.2); color: var(--holiday); }
     .day-num.friday { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .day-num.leave { background: rgba(56, 189, 248, 0.2); color: var(--leave); }
     .day-info { flex: 1; }
     .day-header {
       display: flex;
@@ -163,6 +169,7 @@
     .status-ok { background: rgba(34, 197, 94, 0.15); color: var(--success); }
     .status-partial { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
     .status-invalid { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .status-leave { background: rgba(56, 189, 248, 0.15); color: var(--leave); }
     .status-empty { color: var(--muted); }
     .holiday-badge {
       font-size: 0.7rem;
@@ -206,11 +213,14 @@
       color: var(--muted);
       margin-top: 8px;
     }
-    .force-holiday {
+    .day-options {
       margin-top: 6px;
       font-size: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-    .force-holiday label {
+    .day-options label {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -267,6 +277,10 @@
         <div class="total-item deficit">
           <div class="label">کسری</div>
           <div class="value" id="tDeficit">۰:۰۰</div>
+        </div>
+        <div class="total-item leave">
+          <div class="label">مرخصی</div>
+          <div class="value" id="tLeave">۰</div>
         </div>
       </div>
     </div>
@@ -504,25 +518,37 @@
       thursdayOff.checked = store.thursdayOff;
 
       const days = buildDays();
-      let totals = { presence: 0, mandatory: 0, overtime: 0, deficit: 0 };
+      let totals = { presence: 0, mandatory: 0, overtime: 0, deficit: 0, leave: 0 };
 
       daysList.innerHTML = "";
       days.forEach(day => {
-        const log = store.logs[day.key] || { entry: "", exit: "", forceHoliday: null };
+        const log = store.logs[day.key] || { entry: "", exit: "", forceHoliday: null, leave: false };
+        const isLeave = !!log.leave;
         const holiday = isHoliday(day, log);
-        const result = evaluateDay(log.entry, log.exit, holiday);
-        if (result.status === "ok") {
-          totals.presence += result.presence;
-          totals.mandatory += result.mandatory;
-          totals.overtime += result.overtime;
-          totals.deficit += result.deficit;
+        let result;
+        if (isLeave) {
+          result = { status: "leave", presence: 0, mandatory: 0, overtime: 0, deficit: 0 };
+          totals.leave += 1;
+        } else {
+          result = evaluateDay(log.entry, log.exit, holiday);
+          if (result.status === "ok") {
+            totals.presence += result.presence;
+            totals.mandatory += result.mandatory;
+            totals.overtime += result.overtime;
+            totals.deficit += result.deficit;
+          }
         }
 
         const el = document.createElement("div");
         el.className = "day";
-        const numClass = day.holidayName ? "holiday" : (day.dow === 6 ? "friday" : "");
+        let numClass = "";
+        if (isLeave) numClass = "leave";
+        else if (day.holidayName) numClass = "holiday";
+        else if (day.dow === 6) numClass = "friday";
+
         let statusHtml = "";
-        if (result.status === "ok") statusHtml = `<span class="day-status status-ok">ثبت شد</span>`;
+        if (result.status === "leave") statusHtml = `<span class="day-status status-leave">مرخصی</span>`;
+        else if (result.status === "ok") statusHtml = `<span class="day-status status-ok">ثبت شد</span>`;
         else if (result.status === "partial") statusHtml = `<span class="day-status status-partial">ناقص</span>`;
         else if (result.status === "invalid") statusHtml = `<span class="day-status status-invalid">نامعتبر</span>`;
 
@@ -534,7 +560,25 @@
         let resultHtml = "";
         if (result.status === "ok") {
           resultHtml = `<div class="day-result">حضور ${formatMinutes(result.presence)} | موظف ${formatMinutes(result.mandatory)} | اضافه ${formatMinutes(result.overtime)}</div>`;
+        } else if (result.status === "leave") {
+          resultHtml = `<div class="day-result" style="color:var(--leave)">روز مرخصی</div>`;
         }
+
+        // گزینه‌های روز: تعطیل اجباری همیشه، مرخصی فقط برای روزهای غیرتعطیل
+        let optionsHtml = `<div class="day-options">`;
+        optionsHtml += `
+          <label>
+            <input type="checkbox" data-key="${day.key}" data-field="forceHoliday" ${log.forceHoliday === true ? "checked" : ""} />
+            تعطیل اجباری
+          </label>`;
+        if (!day.autoHoliday) {
+          optionsHtml += `
+          <label>
+            <input type="checkbox" data-key="${day.key}" data-field="leave" ${isLeave ? "checked" : ""} />
+            مرخصی
+          </label>`;
+        }
+        optionsHtml += `</div>`;
 
         el.innerHTML = `
           <div class="day-num ${numClass}">${faNum(day.jd)}</div>
@@ -545,15 +589,10 @@
             </div>
             ${holidayHtml}
             <div class="time-inputs">
-              <input type="time" data-key="${day.key}" data-field="entry" value="${log.entry}" />
-              <input type="time" data-key="${day.key}" data-field="exit" value="${log.exit}" />
+              <input type="time" data-key="${day.key}" data-field="entry" value="${log.entry}" ${isLeave ? "disabled" : ""} />
+              <input type="time" data-key="${day.key}" data-field="exit" value="${log.exit}" ${isLeave ? "disabled" : ""} />
             </div>
-            <div class="force-holiday">
-              <label>
-                <input type="checkbox" data-key="${day.key}" data-field="forceHoliday" ${log.forceHoliday === true ? "checked" : ""} />
-                تعطیل اجباری
-              </label>
-            </div>
+            ${optionsHtml}
             ${resultHtml}
           </div>
         `;
@@ -564,6 +603,7 @@
       document.getElementById("tMandatory").textContent = formatMinutes(totals.mandatory);
       document.getElementById("tOvertime").textContent = formatMinutes(totals.overtime);
       document.getElementById("tDeficit").textContent = formatMinutes(totals.deficit);
+      document.getElementById("tLeave").textContent = faNum(totals.leave);
     }
 
     // Events
@@ -580,15 +620,19 @@
       save(); render();
     });
 
-    // Save immediately when time is picked
+    // Save immediately when time is picked or checkbox changed
     daysList.addEventListener("change", (e) => {
       const t = e.target;
       const key = t.dataset.key;
       const field = t.dataset.field;
       if (!key || !field) return;
-      if (!store.logs[key]) store.logs[key] = { entry: "", exit: "", forceHoliday: null };
+      if (!store.logs[key]) store.logs[key] = { entry: "", exit: "", forceHoliday: null, leave: false };
       if (field === "forceHoliday") {
         store.logs[key].forceHoliday = t.checked ? true : null;
+        if (t.checked) store.logs[key].leave = false; // نمی‌شود همزمان مرخصی و تعطیل اجباری
+      } else if (field === "leave") {
+        store.logs[key].leave = t.checked;
+        if (t.checked) store.logs[key].forceHoliday = null;
       } else if (t.type === "time") {
         store.logs[key][field] = t.value || "";
       }
@@ -601,7 +645,7 @@
       const key = t.dataset.key;
       const field = t.dataset.field;
       if (!key || !field) return;
-      if (!store.logs[key]) store.logs[key] = { entry: "", exit: "", forceHoliday: null };
+      if (!store.logs[key]) store.logs[key] = { entry: "", exit: "", forceHoliday: null, leave: false };
       const val = normalizeTime(t.value);
       store.logs[key][field] = val;
       t.value = val;

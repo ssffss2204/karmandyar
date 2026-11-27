@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f1419" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="کارمندیار" />
+  <title>کارمندیار</title>
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%20%22%DA%A9%D8%A7%D8%B1%D9%85%D9%86%D8%AF%DB%8C%D8%A7%D8%B1%22%2C%20%22short_name%22%3A%20%22%DA%A9%D8%A7%D8%B1%D9%85%D9%86%D8%AF%DB%8C%D8%A7%D8%B1%22%2C%20%22start_url%22%3A%20%22.%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%230f1419%22%2C%20%22theme_color%22%3A%20%22%230f1419%22%2C%20%22orientation%22%3A%20%22portrait%22%2C%20%22lang%22%3A%20%22fa%22%2C%20%22dir%22%3A%20%22rtl%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%253E%253Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2722%27%20fill%3D%27%25233b82f6%27%2F%253E%253Ctext%20x%3D%2750%27%20y%3D%2764%27%20font-size%3D%2752%27%20text-anchor%3D%27middle%27%20fill%3D%27white%27%20font-family%3D%27Tahoma%2Csans-serif%27%20font-weight%3D%27700%27%253E%25DA%25A9%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%20%22sizes%22%3A%20%22any%22%2C%20%22type%22%3A%20%22image%2Fsvg%2Bxml%22%2C%20%22purpose%22%3A%20%22any%20maskable%22%7D%5D%7D" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%233b82f6'/%3E%3Ctext x='50' y='64' font-size='52' text-anchor='middle' fill='white' font-family='Tahoma%2Csans-serif' font-weight='700'%3E%DA%A9%3C/text%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%233b82f6'/%3E%3Ctext x='50' y='64' font-size='52' text-anchor='middle' fill='white' font-family='Tahoma%2Csans-serif' font-weight='700'%3E%DA%A9%3C/text%3E%3C/svg%3E" />
+<style>
+    :root {
+      --bg: #0f1419;
+      --card: #1a2332;
+      --border: #2a3544;
+      --text: #e8eef5;
+      --muted: #8b9bb0;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --holiday: #a78bfa;
+      --leave: #38bdf8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 12px;
+      line-height: 1.5;
+    }
+    .container { max-width: 480px; margin: 0 auto; }
+    h1 {
+      font-size: 1.35rem;
+      text-align: center;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .row > * { flex: 1; min-width: 0; }
+    label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    select, input[type="text"], input[type="time"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+    }
+    select:focus, input:focus {
+      border-color: var(--primary);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover, .btn-primary:active { background: var(--primary-hover); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 6px 10px; font-size: 0.8rem; }
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    .toggle input { width: 18px; height: 18px; accent-color: var(--primary); }
+    .totals {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .totals .total-item:last-child {
+      grid-column: 1 / -1;
+    }
+    .total-item {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+    .total-item .label { font-size: 0.75rem; color: var(--muted); }
+    .total-item .value { font-size: 1.15rem; font-weight: 700; margin-top: 2px; direction: ltr; }
+    .total-item.overtime .value { color: var(--success); }
+    .total-item.deficit .value { color: var(--danger); }
+    .total-item.leave .value { color: var(--leave); }
+    .day {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .day:last-child { border-bottom: none; }
+    .day-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      background: var(--bg);
+    }
+    .day-num.holiday { background: rgba(167, 139, 250, 0.2); color: var(--holiday); }
+    .day-num.friday { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .day-num.leave { background: rgba(56, 189, 248, 0.2); color: var(--leave); }
+    .day-info { flex: 1; }
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .day-name { font-size: 0.85rem; color: var(--muted); }
+    .day-status {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .status-ok { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+    .status-partial { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .status-invalid { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .status-leave { background: rgba(56, 189, 248, 0.15); color: var(--leave); }
+    .status-empty { color: var(--muted); }
+    .holiday-badge {
+      font-size: 0.7rem;
+      color: var(--holiday);
+      margin-bottom: 4px;
+    }
+    .time-inputs {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .time-inputs input[type="time"] {
+      flex: 1;
+      padding: 10px 8px;
+      font-size: 1rem;
+      text-align: center;
+      direction: ltr;
+      min-height: 44px;
+      color-scheme: dark;
+    }
+    .time-inputs input[type="time"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.8);
+      opacity: 0.7;
+    }
+    .day-result {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+      direction: ltr;
+      text-align: left;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .actions .btn { flex: 1; }
+    .note {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .day-options {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .day-options label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 20px;
+      padding-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>کارمندیار</h1>
+    <p class="subtitle">دفتر کارکرد با تقویم شمسی</p>
+
+    <!-- Controls -->
+    <div class="card">
+      <div class="row" style="margin-bottom: 12px;">
+        <div>
+          <label>سال</label>
+          <select id="yearSelect"></select>
+        </div>
+        <div>
+          <label>ماه</label>
+          <select id="monthSelect"></select>
+        </div>
+      </div>
+      <div class="toggle">
+        <input type="checkbox" id="thursdayOff" />
+        <label for="thursdayOff" style="margin:0; color:var(--text);">پنج‌شنبه تعطیل باشد</label>
+      </div>
+    </div>
+
+    <!-- Totals -->
+    <div class="card">
+      <div class="totals" id="totals">
+        <div class="total-item">
+          <div class="label">حضور</div>
+          <div class="value" id="tPresence">۰:۰۰</div>
+        </div>
+        <div class="total-item">
+          <div class="label">موظف</div>
+          <div class="value" id="tMandatory">۰:۰۰</div>
+        </div>
+        <div class="total-item overtime">
+          <div class="label">اضافه‌کاری</div>
+          <div class="value" id="tOvertime">۰:۰۰</div>
+        </div>
+        <div class="total-item deficit">
+          <div class="label">کسری</div>
+          <div class="value" id="tDeficit">۰:۰۰</div>
+        </div>
+        <div class="total-item leave">
+          <div class="label">مرخصی</div>
+          <div class="value" id="tLeave">۰</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Days -->
+    <div class="card" id="daysList"></div>
+
+    <div class="actions">
+      <button class="btn btn-ghost" id="btnClear">پاک کردن ماه</button>
+      <button class="btn btn-primary" id="btnToday">برو به امروز</button>
+    </div>
+    <div class="actions" style="margin-top:8px;">
+      <button class="btn btn-ghost" id="btnBackup">دانلود پشتیبان</button>
+      <button class="btn btn-ghost" id="btnRestore">بازیابی از فایل</button>
+      <input type="file" id="restoreFile" accept=".json,application/json" style="display:none" />
+    </div>
+    <p class="note" id="note"></p>
+    
+    <div id="installBanner" style="display:none; position:fixed; bottom:16px; left:12px; right:12px; background:#1a2332; border:1px solid #2a3544; border-radius:12px; padding:14px; z-index:100; box-shadow:0 8px 24px rgba(0,0,0,0.4);">
+      <div style="font-size:0.95rem; margin-bottom:10px;">می‌خوای کارمندیار رو به صفحه اصلی اضافه کنی؟</div>
+      <div style="display:flex; gap:8px;">
+        <button id="btnInstall" class="btn btn-primary" style="flex:1;">نصب روی گوشی</button>
+        <button id="btnInstallDismiss" class="btn btn-ghost" style="flex:1;">بعداً</button>
+      </div>
+    </div>
+
+    <div class="footer">داده‌ها فقط روی همین دستگاه ذخیره می‌شوند</div>
+  </div>
+
+  <script>
+    // ========== Calendar helpers (simplified jalaali) ==========
+    const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
+    function faNum(v) {
+      return String(v).replace(/\d/g, d => FA_DIGITS[Number(d)] ?? d);
+    }
+    function formatMinutes(total) {
+      const sign = total < 0 ? "−" : "";
+      const abs = Math.abs(Math.round(total));
+      const h = Math.floor(abs / 60);
+      const m = abs % 60;
+      return `${sign}${faNum(h)}:${faNum(String(m).padStart(2, "0"))}`;
+    }
+
+    // Simple jalaali conversion (approx for 1400-1410)
+    // Using a lightweight implementation
+    function toJalaali(gy, gm, gd) {
+      const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+      let jy = (gy <= 1600) ? 0 : 979;
+      gy -= (gy <= 1600) ? 621 : 1600;
+      let gy2 = (gm > 2) ? (gy + 1) : gy;
+      let days = (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) + Math.floor((gy2 + 399) / 400) - 80 + gd + g_d_m[gm - 1];
+      jy += 33 * Math.floor(days / 12053);
+      days %= 12053;
+      jy += 4 * Math.floor(days / 1461);
+      days %= 1461;
+      if (days > 365) {
+        jy += Math.floor((days - 1) / 365);
+        days = (days - 1) % 365;
+      }
+      let jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
+      let jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+      return { jy, jm, jd };
+    }
+    function toGregorian(jy, jm, jd) {
+      let gy = (jy <= 979) ? 621 : 1600;
+      jy -= (jy <= 979) ? 0 : 979;
+      let days = (365 * jy) + Math.floor(jy / 33) * 8 + Math.floor(((jy % 33) + 3) / 4) + 78 + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30 + 186));
+      gy += 400 * Math.floor(days / 146097);
+      days %= 146097;
+      if (days > 36524) {
+        gy += 100 * Math.floor(--days / 36524);
+        days %= 36524;
+        if (days >= 365) days++;
+      }
+      gy += 4 * Math.floor(days / 1461);
+      days %= 1461;
+      if (days > 365) {
+        gy += Math.floor((days - 1) / 365);
+        days = (days - 1) % 365;
+      }
+      let gd = days + 1;
+      const sal_a = [0, 31, ((gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      let gm;
+      for (gm = 1; gm <= 12 && gd > sal_a[gm]; gm++) gd -= sal_a[gm];
+      return { gy, gm, gd };
+    }
+    function jalaaliMonthLength(jy, jm) {
+      if (jm <= 6) return 31;
+      if (jm <= 11) return 30;
+      // Esfand
+      const g = toGregorian(jy, 12, 29);
+      const next = toGregorian(jy + 1, 1, 1);
+      // Approximate leap
+      return (jy % 33 === 1 || jy % 33 === 5 || jy % 33 === 9 || jy % 33 === 13 || jy % 33 === 17 || jy % 33 === 22 || jy % 33 === 26 || jy % 33 === 30) ? 30 : 29;
+    }
+    function weekdayIndex(jy, jm, jd) {
+      const g = toGregorian(jy, jm, jd);
+      const d = new Date(Date.UTC(g.gy, g.gm - 1, g.gd));
+      return (d.getUTCDay() + 1) % 7; // 0=Sat
+    }
+    function dateKey(jy, jm, jd) {
+      return `${jy}/${String(jm).padStart(2, "0")}/${String(jd).padStart(2, "0")}`;
+    }
+    function todayJalaali() {
+      const n = new Date();
+      return toJalaali(n.getFullYear(), n.getMonth() + 1, n.getDate());
+    }
+
+    // ========== Holidays (1405-1406) ==========
+    const HOLIDAYS = {
+      "1405/01/01": "عید نوروز", "1405/01/02": "عید نوروز", "1405/01/03": "عید نوروز", "1405/01/04": "عید نوروز",
+      "1405/01/12": "روز جمهوری اسلامی", "1405/01/13": "سیزده‌بدر",
+      "1405/01/25": "شهادت امام جعفر صادق",
+      "1405/03/06": "عید قربان", "1405/03/14": "رحلت امام خمینی / عید غدیر", "1405/03/15": "قیام ۱۵ خرداد",
+      "1405/04/03": "تاسوعا", "1405/04/04": "عاشورا",
+      "1405/05/13": "اربعین", "1405/05/21": "رحلت پیامبر", "1405/05/22": "شهادت امام رضا",
+      "1405/05/30": "شهادت امام حسن عسکری", "1405/06/08": "میلاد پیامبر",
+      "1405/08/22": "شهادت حضرت فاطمه",
+      "1405/10/02": "ولادت امام علی", "1405/10/16": "مبعث",
+      "1405/11/04": "نیمه شعبان", "1405/11/22": "پیروزی انقلاب",
+      "1405/12/09": "شهادت امام علی", "1405/12/19": "عید فطر", "1405/12/20": "تعطیل عید فطر",
+      "1405/12/29": "ملی شدن نفت",
+      "1406/01/01": "عید نوروز", "1406/01/02": "عید نوروز", "1406/01/03": "عید نوروز", "1406/01/04": "عید نوروز",
+      "1406/01/12": "روز جمهوری اسلامی", "1406/01/13": "سیزده‌بدر", "1406/01/14": "شهادت امام جعفر صادق",
+      "1406/02/27": "عید قربان", "1406/03/04": "عید غدیر", "1406/03/14": "رحلت امام خمینی", "1406/03/15": "قیام ۱۵ خرداد",
+      "1406/03/24": "تاسوعا", "1406/03/25": "عاشورا",
+      "1406/05/03": "اربعین", "1406/05/11": "رحلت پیامبر", "1406/05/12": "شهادت امام رضا",
+      "1406/05/20": "شهادت امام حسن عسکری", "1406/05/29": "میلاد پیامبر",
+      "1406/08/12": "شهادت حضرت فاطمه",
+      "1406/09/21": "ولادت امام علی", "1406/10/05": "مبعث", "1406/10/23": "نیمه شعبان",
+      "1406/11/22": "پیروزی انقلاب",
+    };
+
+    const YEARS = [1405, 1406, 1407, 1408];
+    const MONTHS = ["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+    const WEEKDAYS = ["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];
+
+    const SHIFT_START = 7 * 60;
+    const SHIFT_END = 14 * 60 + 30;
+    const MANDATORY = SHIFT_END - SHIFT_START;
+
+    const STORAGE_KEY = "karmandyar-v1";
+
+    // ========== Logic ==========
+    function parseTime(v) {
+      const m = /^(\d{1,2}):(\d{2})$/.exec(v);
+      if (!m) return null;
+      const h = Number(m[1]), min = Number(m[2]);
+      if (h > 23 || min > 59) return null;
+      return h * 60 + min;
+    }
+    function normalizeTime(v) {
+      const m = /^(\d{1,2}):(\d{2})/.exec(v);
+      if (!m) return "";
+      const h = Number(m[1]), min = Number(m[2]);
+      if (h > 23 || min > 59) return "";
+      return `${String(h).padStart(2,"0")}:${String(min).padStart(2,"0")}`;
+    }
+    function evaluateDay(entry, exit, holiday) {
+      const s = parseTime(entry), e = parseTime(exit);
+      if (s == null && e == null) return { status: "empty", presence: 0, mandatory: 0, overtime: 0, deficit: 0 };
+      if (s == null || e == null) return { status: "partial", presence: 0, mandatory: 0, overtime: 0, deficit: 0 };
+      if (e <= s) return { status: "invalid", presence: 0, mandatory: 0, overtime: 0, deficit: 0 };
+      const presence = e - s;
+      if (holiday) return { status: "ok", presence, mandatory: 0, overtime: presence, deficit: 0 };
+      const mandatory = Math.max(0, Math.min(e, SHIFT_END) - Math.max(s, SHIFT_START));
+      const overtime = Math.max(0, e - Math.max(s, SHIFT_END));
+      const deficit = Math.max(0, MANDATORY - mandatory);
+      return { status: "ok", presence, mandatory, overtime, deficit };
+    }
+
+    // ========== State ==========
+    let store = { year: 1405, month: 1, thursdayOff: false, logs: {} };
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const p = JSON.parse(raw);
+        if (p.year && p.month) {
+          store.year = p.year;
+          store.month = p.month;
+          store.thursdayOff = !!p.thursdayOff;
+          store.logs = p.logs || {};
+        }
+      } catch {}
+    }
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    }
+
+    // ========== UI ==========
+    const yearSelect = document.getElementById("yearSelect");
+    const monthSelect = document.getElementById("monthSelect");
+    const thursdayOff = document.getElementById("thursdayOff");
+    const daysList = document.getElementById("daysList");
+    const note = document.getElementById("note");
+
+    YEARS.forEach(y => {
+      const o = document.createElement("option");
+      o.value = y; o.textContent = faNum(y);
+      yearSelect.appendChild(o);
+    });
+    MONTHS.forEach((m, i) => {
+      const o = document.createElement("option");
+      o.value = i + 1; o.textContent = m;
+      monthSelect.appendChild(o);
+    });
+
+    function buildDays() {
+      const { year, month, thursdayOff: thOff, logs } = store;
+      const len = jalaaliMonthLength(year, month);
+      const days = [];
+      for (let jd = 1; jd <= len; jd++) {
+        const key = dateKey(year, month, jd);
+        const dow = weekdayIndex(year, month, jd);
+        const holidayName = HOLIDAYS[key] || null;
+        let autoHoliday = false;
+        if (holidayName) autoHoliday = true;
+        else if (dow === 6) autoHoliday = true;
+        else if (thOff && dow === 5) autoHoliday = true;
+        days.push({ key, jd, dow, holidayName, autoHoliday });
+      }
+      return days;
+    }
+
+    function isHoliday(day, log) {
+      if (log && log.forceHoliday != null) return log.forceHoliday;
+      return day.autoHoliday;
+    }
+
+    function render() {
+      yearSelect.value = store.year;
+      monthSelect.value = store.month;
+      thursdayOff.checked = store.thursdayOff;
+
+      const days = buildDays();
+      let totals = { presence: 0, mandatory: 0, overtime: 0, deficit: 0, leave: 0 };
+
+      daysList.innerHTML = "";
+      days.forEach(day => {
+        const log = store.logs[day.key] || { entry: "", exit: "", forceHoliday: null, leave: false };
+        const isLeave = !!log.leave;
+        const holiday = isHoliday(day, log);
+        let result;
+        if (isLeave) {
+          result = { status: "leave", presence: 0, mandatory: 0, overtime: 0, deficit: 0 };
+          totals.leave += 1;
+        } else {
+          result = evaluateDay(log.entry, log.exit, holiday);
+          if (result.status === "ok") {
+            totals.presence += result.presence;
+            totals.mandatory += result.mandatory;
+            totals.overtime += result.overtime;
+            totals.deficit += result.deficit;
+          }
+        }
+
+        const el = document.createElement("div");
+        el.className = "day";
+        let numClass = "";
+        if (isLeave) numClass = "leave";
+        else if (day.holidayName) numClass = "holiday";
+        else if (day.dow === 6) numClass = "friday";
+
+        let statusHtml = "";
+        if (result.status === "leave") statusHtml = `<span class="day-status status-leave">مرخصی</span>`;
+        else if (result.status === "ok") statusHtml = `<span class="day-status status-ok">ثبت شد</span>`;
+        else if (result.status === "partial") statusHtml = `<span class="day-status status-partial">ناقص</span>`;
+        else if (result.status === "invalid") statusHtml = `<span class="day-status status-invalid">نامعتبر</span>`;
+
+        let holidayHtml = "";
+        if (day.holidayName) holidayHtml = `<div class="holiday-badge">${day.holidayName}</div>`;
+        else if (day.dow === 6) holidayHtml = `<div class="holiday-badge">جمعه</div>`;
+        else if (store.thursdayOff && day.dow === 5) holidayHtml = `<div class="holiday-badge">پنج‌شنبه (تعطیل)</div>`;
+
+        let resultHtml = "";
+        if (result.status === "ok") {
+          resultHtml = `<div class="day-result">حضور ${formatMinutes(result.presence)} | موظف ${formatMinutes(result.mandatory)} | اضافه ${formatMinutes(result.overtime)}</div>`;
+        } else if (result.status === "leave") {
+          resultHtml = `<div class="day-result" style="color:var(--leave)">روز مرخصی</div>`;
+        }
+
+        // گزینه‌های روز: تعطیل اجباری همیشه، مرخصی فقط برای روزهای غیرتعطیل
+        let optionsHtml = `<div class="day-options">`;
+        optionsHtml += `
+          <label>
+            <input type="checkbox" data-key="${day.key}" data-field="forceHoliday" ${log.forceHoliday === true ? "checked" : ""} />
+            تعطیل اجباری
+          </label>`;
+        if (!day.autoHoliday) {
+          optionsHtml += `
+          <label>
+            <input type="checkbox" data-key="${day.key}" data-field="leave" ${isLeave ? "checked" : ""} />
+            مرخصی
+          </label>`;
+        }
+        optionsHtml += `</div>`;
+
+        el.innerHTML = `
+          <div class="day-num ${numClass}">${faNum(day.jd)}</div>
+          <div class="day-info">
+            <div class="day-header">
+              <span class="day-name">${WEEKDAYS[day.dow]}</span>
+              ${statusHtml}
+            </div>
+            ${holidayHtml}
+            <div class="time-inputs">
+              <input type="time" data-key="${day.key}" data-field="entry" value="${log.entry}" ${isLeave ? "disabled" : ""} />
+              <input type="time" data-key="${day.key}" data-field="exit" value="${log.exit}" ${isLeave ? "disabled" : ""} />
+            </div>
+            ${optionsHtml}
+            ${resultHtml}
+          </div>
+        `;
+        daysList.appendChild(el);
+      });
+
+      document.getElementById("tPresence").textContent = formatMinutes(totals.presence);
+      document.getElementById("tMandatory").textContent = formatMinutes(totals.mandatory);
+      document.getElementById("tOvertime").textContent = formatMinutes(totals.overtime);
+      document.getElementById("tDeficit").textContent = formatMinutes(totals.deficit);
+      document.getElementById("tLeave").textContent = faNum(totals.leave);
+    }
+
+    // Events
+    yearSelect.addEventListener("change", () => {
+      store.year = Number(yearSelect.value);
+      save(); render();
+    });
+    monthSelect.addEventListener("change", () => {
+      store.month = Number(monthSelect.value);
+      save(); render();
+    });
+    thursdayOff.addEventListener("change", () => {
+      store.thursdayOff = thursdayOff.checked;
+      save(); render();
+    });
+
+    // Save immediately when time is picked or checkbox changed
+    daysList.addEventListener("change", (e) => {
+      const t = e.target;
+      const key = t.dataset.key;
+      const field = t.dataset.field;
+      if (!key || !field) return;
+      if (!store.logs[key]) store.logs[key] = { entry: "", exit: "", forceHoliday: null, leave: false };
+      if (field === "forceHoliday") {
+        store.logs[key].forceHoliday = t.checked ? true : null;
+        if (t.checked) store.logs[key].leave = false; // نمی‌شود همزمان مرخصی و تعطیل اجباری
+      } else if (field === "leave") {
+        store.logs[key].leave = t.checked;
+        if (t.checked) store.logs[key].forceHoliday = null;
+      } else if (t.type === "time") {
+        store.logs[key][field] = t.value || "";
+      }
+      save(); render();
+    });
+
+    daysList.addEventListener("blur", (e) => {
+      const t = e.target;
+      if (t.tagName !== "INPUT" || t.type === "checkbox" || t.type === "time") return;
+      const key = t.dataset.key;
+      const field = t.dataset.field;
+      if (!key || !field) return;
+      if (!store.logs[key]) store.logs[key] = { entry: "", exit: "", forceHoliday: null, leave: false };
+      const val = normalizeTime(t.value);
+      store.logs[key][field] = val;
+      t.value = val;
+      save(); render();
+    }, true);
+
+    daysList.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") e.target.blur();
+    });
+
+    document.getElementById("btnClear").addEventListener("click", () => {
+      if (!confirm("همه ساعات این ماه پاک شود؟")) return;
+      const prefix = `${store.year}/${String(store.month).padStart(2,"0")}/`;
+      Object.keys(store.logs).forEach(k => {
+        if (k.startsWith(prefix)) delete store.logs[k];
+      });
+      save(); render();
+      note.textContent = "ساعات ماه پاک شد";
+      setTimeout(() => note.textContent = "", 2000);
+    });
+
+    document.getElementById("btnToday").addEventListener("click", () => {
+      const t = todayJalaali();
+      store.year = t.jy;
+      store.month = t.jm;
+      save(); render();
+    });
+
+    // Backup
+    document.getElementById("btnBackup").addEventListener("click", () => {
+      const data = JSON.stringify(store, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const d = new Date();
+      const name = `karmandyar-backup-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}.json`;
+      a.href = url;
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(url);
+      note.textContent = "فایل پشتیبان دانلود شد";
+      setTimeout(() => note.textContent = "", 2500);
+    });
+
+    // Restore
+    document.getElementById("btnRestore").addEventListener("click", () => {
+      document.getElementById("restoreFile").click();
+    });
+    document.getElementById("restoreFile").addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          if (!data || typeof data !== "object" || !data.logs) {
+            alert("فایل پشتیبان معتبر نیست");
+            return;
+          }
+          if (!confirm("اطلاعات فعلی با فایل پشتیبان جایگزین شود؟")) return;
+          store.year = data.year || store.year;
+          store.month = data.month || store.month;
+          store.thursdayOff = !!data.thursdayOff;
+          store.logs = data.logs || {};
+          save();
+          render();
+          note.textContent = "بازیابی با موفقیت انجام شد";
+          setTimeout(() => note.textContent = "", 2500);
+        } catch {
+          alert("خطا در خواندن فایل پشتیبان");
+        }
+        e.target.value = "";
+      };
+      reader.readAsText(file);
+    });
+
+
+    // PWA install prompt
+    let deferredPrompt = null;
+    const banner = document.getElementById("installBanner");
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!localStorage.getItem("karmandyar-install-dismissed")) {
+        banner.style.display = "block";
+      }
+    });
+    document.getElementById("btnInstall").addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      banner.style.display = "none";
+    });
+    document.getElementById("btnInstallDismiss").addEventListener("click", () => {
+      banner.style.display = "none";
+      localStorage.setItem("karmandyar-install-dismissed", "1");
+    });
+
+    // Init
+    load();
+    const today = todayJalaali();
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      store.year = YEARS.includes(today.jy) ? today.jy : 1405;
+      store.month = today.jm;
+    }
+    render();
+  </script>
+</body>
+</html>
